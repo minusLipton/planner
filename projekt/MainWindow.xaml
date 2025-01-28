@@ -3,27 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Time Planner" Height="600" Width="800">
     <Window.Resources>
-        <!-- Definiujemy kolory i gradienty -->
+        <!-- Define gradients, button styles, etc. -->
         <LinearGradientBrush x:Key="DarkBackgroundGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#FF2E3440" Offset="0"/>
             <GradientStop Color="#FF3B4252" Offset="1"/>
         </LinearGradientBrush>
 
-        <LinearGradientBrush x:Key="ButtonGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FF4C566A" Offset="0"/>
-            <GradientStop Color="#FF434C5E" Offset="1"/>
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="ButtonHoverGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FF5E81AC" Offset="0"/>
-            <GradientStop Color="#FF4C566A" Offset="1"/>
-        </LinearGradientBrush>
-
         <SolidColorBrush x:Key="TextColor" Color="#ECEFF4"/>
 
-        <!-- Styl dla przycisków -->
+        <!-- Style for buttons -->
         <Style TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource ButtonGradient}"/>
+            <Setter Property="Background" Value="{StaticResource DarkBackgroundGradient}"/>
             <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
             <Setter Property="BorderBrush" Value="#FF4C566A"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -34,25 +24,16 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                CornerRadius="5">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ButtonHoverGradient}"/>
-                    <Setter Property="BorderBrush" Value="#FF81A1C1"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
 
-        <!-- Styl dla DataGrid -->
+        <!-- Style for DataGrid -->
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="{StaticResource DarkBackgroundGradient}"/>
             <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
@@ -63,113 +44,57 @@
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
-            <Setter Property="ColumnHeaderStyle">
-                <Setter.Value>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Background" Value="#FF4C566A"/>
-                        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
-                        <Setter Property="FontWeight" Value="Bold"/>
-                        <Setter Property="Padding" Value="10"/>
-                    </Style>
-                </Setter.Value>
-            </Setter>
         </Style>
 
-        <!-- Styl dla ComboBox -->
-        <Style TargetType="ComboBox">
-            <Setter Property="Background" Value="{StaticResource ButtonGradient}"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
-            <Setter Property="BorderBrush" Value="#FF4C566A"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                CornerRadius="5">
-                            <Grid>
-                                <ToggleButton Name="ToggleButton" 
-                                              Grid.Column="2" 
-                                              Focusable="False"
-                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
-                                              ClickMode="Press">
-                                </ToggleButton>
-                                <ContentPresenter Name="ContentSite"
-                                                  IsHitTestVisible="False" 
-                                                  Content="{TemplateBinding SelectionBoxItem}"
-                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                  Margin="5"
-                                                  VerticalAlignment="Center"
-                                                  HorizontalAlignment="Left"/>
-                                <TextBox x:Name="PART_EditableTextBox"
-                                         Style="{x:Null}" 
-                                         HorizontalAlignment="Left" 
-                                         VerticalAlignment="Center" 
-                                         Margin="5"
-                                         Focusable="True" 
-                                         Background="Transparent"
-                                         Visibility="Hidden"
-                                         IsReadOnly="{TemplateBinding IsReadOnly}"/>
-                                <Popup Name="Popup"
-                                       Placement="Bottom"
-                                       IsOpen="{TemplateBinding IsDropDownOpen}"
-                                       AllowsTransparency="True" 
-                                       Focusable="False"
-                                       PopupAnimation="Slide">
-                                    <Grid Name="DropDown"
-                                          SnapsToDevicePixels="True"                
-                                          MinWidth="{TemplateBinding ActualWidth}"
-                                          MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                        <Border x:Name="DropDownBorder"
-                                                Background="{StaticResource DarkBackgroundGradient}"
-                                                BorderBrush="#FF4C566A"
-                                                BorderThickness="1"/>
-                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
-                                        </ScrollViewer>
-                                    </Grid>
-                                </Popup>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Window.Resources>
 
-    <!-- Główny kontener z zastosowanym tłem gradientowym -->
     <Grid Background="{StaticResource DarkBackgroundGradient}">
-        <!-- Główny kontener z zakładkami -->
         <TabControl Background="Transparent">
-            <!-- Zakładka 1: Kalendarz -->
+            <!-- Tab 1: Kalendarz -->
             <TabItem Header="Kalendarz" Foreground="{StaticResource TextColor}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="129*"/>
                         <ColumnDefinition Width="665*"/>
                     </Grid.ColumnDefinitions>
-                    <!-- Nagłówek z przyciskiem dodawania zadania -->
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Przycisk dodawania zadania -->
+                    <!-- Button to add task -->
                     <Button x:Name="AddTaskButton" Grid.Row="0" Content="Dodaj zadanie" HorizontalAlignment="Left" Margin="10,10,0,10" Padding="10" Click="AddTaskButton_Click"/>
 
-                    <!-- Kalendarz tygodniowy -->
-                    <DataGrid Grid.Row="1" Margin="10,10,10,10" AutoGenerateColumns="False" ItemsSource="{Binding Tasks}" Grid.ColumnSpan="2">
+                    <!-- DataGrid for task list -->
+                    <DataGrid x:Name="TaskDataGrid" Grid.Row="1" Margin="10,10,10,10" AutoGenerateColumns="False" ItemsSource="{Binding Tasks}" Grid.ColumnSpan="2">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Nazwa zadania" Binding="{Binding TaskName}" Width="*"/>
-                            <DataGridTextColumn Header="Czas rozpoczęcia" Binding="{Binding StartTime}" Width="Auto"/>
-                            <DataGridTextColumn Header="Czas zakończenia" Binding="{Binding EndTime}" Width="Auto"/>
-                            <DataGridTextColumn Header="Czas poświęcony" Binding="{Binding TimeSpent}" Width="Auto"/>
+                            <DataGridTextColumn Header="Czas rozpoczęcia" Binding="{Binding StartTime, StringFormat='yyyy-MM-dd HH:mm'}" Width="Auto"/>
+                            <DataGridTextColumn Header="Czas zakończenia" Binding="{Binding EndTime, StringFormat='yyyy-MM-dd HH:mm'}" Width="Auto"/>
+
+                            <!-- Time spent column - editable -->
+                            <DataGridTemplateColumn Header="Czas poświęcony" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding HoursSpent}" Margin="0,0,5,0"/>
+                                            <TextBlock Text=":" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding MinutesSpent}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="{Binding HoursSpent, Mode=TwoWay}" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Text=":" HorizontalAlignment="Center"/>
+                                            <TextBox Text="{Binding MinutesSpent, Mode=TwoWay}" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
                             <DataGridTemplateColumn Header="Akcje" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -182,16 +107,15 @@
                 </Grid>
             </TabItem>
 
-            <!-- Zakładka 2: Śledzenie czasu -->
+            <!-- Tab 2: Śledzenie czasu -->
             <TabItem Header="Śledzenie czasu" Foreground="{StaticResource TextColor}">
                 <Grid>
-                    <!-- Wykres lub paski postępu -->
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Filtrowanie zadań -->
+                    <!-- Task filtering controls -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
                         <ComboBox x:Name="FilterComboBox" Width="150" Margin="5" SelectedIndex="0">
                             <ComboBoxItem Content="Dzienny"/>
@@ -201,10 +125,9 @@
                         <Button Content="Filtruj" Margin="5" Click="FilterButton_Click"/>
                     </StackPanel>
 
-                    <!-- Wykres lub paski postępu -->
+                    <!-- Display total time spent -->
                     <Grid Grid.Row="1" Margin="10">
-                        <!-- Tutaj możesz dodać wykres lub paski postępu -->
-                        <TextBlock Text="Wykres czasu poświęconego na zadania" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextColor}"/>
+                        <TextBlock x:Name="TotalTimeSpentTextBlock" Text="{Binding TotalTimeSpent}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                     </Grid>
                 </Grid>
             </TabItem>
