@@ -34,8 +34,8 @@ namespace TimePlannerApp
                 MinutesSpent = 30
             });
 
-            UpdateTotalTimeSpent();
-            UpdateProgressBar();
+            UpdateTotalTimeSpent(Tasks);
+            UpdateProgressBar(Tasks);
         }
 
         // Delete Task Button Click Event
@@ -45,41 +45,70 @@ namespace TimePlannerApp
             var taskToRemove = (Task)((Button)sender).DataContext;
             Tasks.Remove(taskToRemove);
 
-            UpdateTotalTimeSpent();
-            UpdateProgressBar();
+            UpdateTotalTimeSpent(Tasks);
+            UpdateProgressBar(Tasks);
         }
 
         // Filter Button Click Event
         private void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Handle filtering tasks based on daily, weekly, or monthly
-            UpdateTotalTimeSpent();
-            UpdateProgressBar();
+            // Get the selected filter from the ComboBox
+            string selectedFilter = ((ComboBoxItem)FilterComboBox.SelectedItem).Content.ToString();
+
+            // Get the filtered tasks based on the selected filter
+            ObservableCollection<Task> filteredTasks;
+
+            switch (selectedFilter)
+            {
+                case "Dzienny": // Daily filter
+                    filteredTasks = new ObservableCollection<Task>(Tasks.Where(t => t.StartTime.Date == DateTime.Now.Date));
+                    break;
+
+                case "Tygodniowy": // Weekly filter
+                    var startOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
+                    var endOfWeek = startOfWeek.AddDays(7);
+                    filteredTasks = new ObservableCollection<Task>(Tasks.Where(t => t.StartTime >= startOfWeek && t.StartTime < endOfWeek));
+                    break;
+
+                case "Miesięczny": // Monthly filter
+                    filteredTasks = new ObservableCollection<Task>(Tasks.Where(t => t.StartTime.Month == DateTime.Now.Month && t.StartTime.Year == DateTime.Now.Year));
+                    break;
+
+                default:
+                    filteredTasks = new ObservableCollection<Task>(Tasks);
+                    break;
+            }
+
+            // Update the TotalTimeSpentTextBlock for the filtered tasks
+            UpdateTotalTimeSpent(filteredTasks);
+
+            // Update the progress bar with the filtered tasks
+            UpdateProgressBar(filteredTasks);
         }
 
         // Method to update total time spent
-        private void UpdateTotalTimeSpent()
+        private void UpdateTotalTimeSpent(ObservableCollection<Task> filteredTasks)
         {
-            int totalMinutes = Tasks.Sum(t => t.HoursSpent * 60 + t.MinutesSpent);
+            int totalMinutes = filteredTasks.Sum(t => t.HoursSpent * 60 + t.MinutesSpent);
             int hours = totalMinutes / 60;
             int minutes = totalMinutes % 60;
             TotalTimeSpentTextBlock.Text = $"{hours} hours {minutes} minutes";
         }
 
         // Method to update the progress bar (graph)
-        private void UpdateProgressBar()
+        private void UpdateProgressBar(ObservableCollection<Task> filteredTasks)
         {
             ProgressBarCanvas.Children.Clear();
             LegendStackPanel.Children.Clear();
 
-            // Calculate total time
-            int totalMinutes = Tasks.Sum(t => t.HoursSpent * 60 + t.MinutesSpent);
+            // Calculate total time for the filtered tasks
+            int totalMinutes = filteredTasks.Sum(t => t.HoursSpent * 60 + t.MinutesSpent);
 
             // Initialize variables for drawing
             double currentX = 0;
             Random random = new Random();
 
-            foreach (var task in Tasks)
+            foreach (var task in filteredTasks)
             {
                 int taskMinutes = task.HoursSpent * 60 + task.MinutesSpent;
                 double taskWidth = (taskMinutes / (double)totalMinutes) * ProgressBarCanvas.Width;
