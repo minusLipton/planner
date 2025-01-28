@@ -127,7 +127,7 @@
 
                     <!-- Display total time spent -->
                     <Grid Grid.Row="1" Margin="10">
-                        <TextBlock x:Name="TotalTimeSpentTextBlock" Text="{Binding TotalTimeSpent}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextColor}"/>
+                        <TextBlock x:Name="TotalTimeSpentTextBlock" Text="0 hours 0 minutes" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                     </Grid>
                 </Grid>
             </TabItem>

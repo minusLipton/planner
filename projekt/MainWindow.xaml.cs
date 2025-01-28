@@ -9,6 +9,7 @@ namespace TimePlannerApp
     public partial class MainWindow : Window
     {
         public ObservableCollection<Task> Tasks { get; set; } = new ObservableCollection<Task>();
+        public ObservableCollection<Task> FilteredTasks { get; set; } = new ObservableCollection<Task>();
 
         public MainWindow()
         {
@@ -42,15 +43,44 @@ namespace TimePlannerApp
 
         private void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Handle filtering tasks based on daily, weekly, or monthly
-            MessageBox.Show("Filtruj clicked!");
+            // Filter tasks based on selected period
+            string selectedPeriod = ((ComboBoxItem)FilterComboBox.SelectedItem).Content.ToString();
+            DateTime filterStartDate = DateTime.Now;
+
+            switch (selectedPeriod)
+            {
+                case "Dzienny":
+                    filterStartDate = DateTime.Today;
+                    break;
+                case "Tygodniowy":
+                    filterStartDate = DateTime.Now.AddDays(-7);
+                    break;
+                case "Miesięczny":
+                    filterStartDate = DateTime.Now.AddDays(-30);
+                    break;
+            }
+
+            // Filter tasks based on the start date
+            FilteredTasks.Clear();
+            foreach (var task in Tasks)
+            {
+                if (task.StartTime >= filterStartDate)
+                {
+                    FilteredTasks.Add(task);
+                }
+            }
+
+            // Update the total time spent for the filtered tasks
+            UpdateTotalTimeSpent();
         }
 
         private void UpdateTotalTimeSpent()
         {
-            int totalMinutes = Tasks.Sum(t => t.HoursSpent * 60 + t.MinutesSpent);
+            // Use FilteredTasks for calculating total time spent
+            int totalMinutes = FilteredTasks.Sum(t => t.HoursSpent * 60 + t.MinutesSpent);
             int hours = totalMinutes / 60;
             int minutes = totalMinutes % 60;
+
             TotalTimeSpentTextBlock.Text = $"{hours} hours {minutes} minutes";
         }
     }
